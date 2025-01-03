@@ -1,5 +1,6 @@
 package com.leoromeo.seguimiento.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-
 @Preview
 @Composable
 fun AddHabitScreen() {
@@ -52,6 +52,24 @@ fun AddHabitScreen() {
 
 @Composable
 private fun BodyScreen() {
+    var nombre by remember { mutableStateOf("") }
+    var desc by remember { mutableStateOf("") }
+    var fecha by remember { mutableStateOf("") }
+    var motivo by remember { mutableStateOf("") }
+    val isError = remember { mutableStateMapOf<String, Boolean>() }
+
+    fun validateFields(field: String, value: String): Boolean {
+        return when (field) {
+            "nombre" -> value.length >= 5
+            "dec" -> value.length >= 10
+            "motivo" -> value.length >= 10
+            else -> true
+
+        }
+    }
+
+
+
     Card(
         modifier = Modifier
             .width(400.dp) //Refactorizar
@@ -70,48 +88,138 @@ private fun BodyScreen() {
             ) {
             Column {
                 TextField(
-                    value = "",
-                    onValueChange = {},
+                    value = nombre,
+                    onValueChange = {
+                        nombre = it
+                        isError["nombre"] = !validateFields("nombre", it)
 
-                    placeholder = {Text(text = "Campo obligatorio")},
+                    },
+
+                    placeholder = {
+                        if (isError["nombre"] == true) {
+                            Text("Debe tener al menos 5 caracteres", color = Color.Red)
+                        } else {
+                            Text("Nombre del hábito")
+                        }
+
+
+                    },
                     label = { Text("Nombre del hábito") },
-                    leadingIcon={Icon(Icons.Default.AccountCircle, contentDescription = "Agregar hábito")},
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.AccountCircle,
+                            contentDescription = "Agregar hábito"
+                        )
+                    },
+                    isError = isError["nombre"] == true,
+
                     modifier = Modifier.fillMaxWidth(),
 
                     )
                 Spacer(modifier = Modifier.height(20.dp))
+                if (isError["nombre"] == true) {
+                    Text(
+                        text = "Debe tener al menos 5 caracteres",
+                        color = Color.Red,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
+
                 TextField(
-                    value = "",
-                    onValueChange = {},
-                    placeholder = {Text(text = "Campo obligatorio")},
+                    value = desc,
+                    onValueChange = {
+                        desc = it
+                        isError["dec"] = !validateFields("dec", it)
+
+                    },
+                    placeholder = {
+                        if (isError["dec"] == true) {
+                            Text("Debe tener al menos 10 caracteres", color = Color.Red)
+                        } else {
+                            Text("Descripción breve")
+
+                        }
+                    },
+                    isError = isError["dec"] == true,
                     label = { Text("Descripción breve") },
-                    leadingIcon={Icon(Icons.Default.Add, contentDescription = "Agregar hábito")},
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Agregar hábito"
+                        )
+                    },
+
                     modifier = Modifier.fillMaxWidth()
 
                 )
                 Spacer(modifier = Modifier.height(20.dp))
+                if (isError["dec"] == true) {
+                    Text(
+                        text = "Debe tener al menos 10 caracteres",
+                        color = Color.Red,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
+
+
                 TextField(
-                    value = "",
+                    value = fecha,
                     onValueChange = {},
                     label = { Text("Activar o desactivar notificaciones") },
-                    leadingIcon={Icon(Icons.Default.Add, contentDescription = "Agregar hábito")},
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Agregar hábito"
+                        )
+                    },
                     modifier = Modifier.fillMaxWidth()
 
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
-                    value = "",
-                    onValueChange = {},
+                    value = motivo,
+                    onValueChange = {
+                        motivo = it
+                        isError["motivo"] = !validateFields("motivo", it)
+                    },
                     label = { Text("Motivación principal.") },
-                    leadingIcon={Icon(Icons.Default.Favorite, contentDescription = "Agregar hábito")},
-                    modifier = Modifier.fillMaxWidth()
+                    placeholder = {
+                        if (isError["motivo"] == true) {
+                            Text("Debe tener al menos 10 caracteres", color = Color.Red)
+                        } else {
+                            Text("Motivación principal.")
+                        }
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Favorite,
+                            contentDescription = "Agregar hábito"
+                        )
+                    },
+                    isError = isError["motivo"] == true,
+                    modifier = Modifier.fillMaxWidth(),
 
-                )
-                // TODO CREAR UN DATE PIKER PARA SELECCIONAR LA FECHA QUE SE QUIERE HACER
+
+                    )
+                if (isError["motivo"] == true) {
+                    Text(
+                        text = "Debe tener al menos 10 caracteres",
+                        color = Color.Red,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
+
 
             }
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    isError["motivo"] = !validateFields("motivo", motivo)
+                    isError["nombre"] = !validateFields("nombre", nombre)
+                    isError["desc"] = !validateFields("desc", desc)
+                    Log.d("TAG", "BodyScreen: $nombre $desc $fecha $motivo")
+
+
+                },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .size(50.dp),
