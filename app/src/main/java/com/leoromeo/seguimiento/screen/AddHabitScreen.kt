@@ -12,29 +12,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.nio.file.WatchEvent
+
 
 
 @Preview
@@ -76,16 +72,20 @@ private fun BodyScreen() {
                 TextField(
                     value = "",
                     onValueChange = {},
+
+                    placeholder = {Text(text = "Campo obligatorio")},
                     label = { Text("Nombre del hábito") },
+                    leadingIcon={Icon(Icons.Default.AccountCircle, contentDescription = "Agregar hábito")},
                     modifier = Modifier.fillMaxWidth(),
 
-
-                )
+                    )
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
                     value = "",
                     onValueChange = {},
+                    placeholder = {Text(text = "Campo obligatorio")},
                     label = { Text("Descripción breve") },
+                    leadingIcon={Icon(Icons.Default.Add, contentDescription = "Agregar hábito")},
                     modifier = Modifier.fillMaxWidth()
 
                 )
@@ -94,6 +94,7 @@ private fun BodyScreen() {
                     value = "",
                     onValueChange = {},
                     label = { Text("Activar o desactivar notificaciones") },
+                    leadingIcon={Icon(Icons.Default.Add, contentDescription = "Agregar hábito")},
                     modifier = Modifier.fillMaxWidth()
 
                 )
@@ -102,26 +103,27 @@ private fun BodyScreen() {
                     value = "",
                     onValueChange = {},
                     label = { Text("Motivación principal.") },
+                    leadingIcon={Icon(Icons.Default.Favorite, contentDescription = "Agregar hábito")},
                     modifier = Modifier.fillMaxWidth()
 
                 )
                 // TODO CREAR UN DATE PIKER PARA SELECCIONAR LA FECHA QUE SE QUIERE HACER
 
             }
-//            FloatingActionButton(
-//                onClick = { /*TODO*/ },
-//                modifier = Modifier
-//                    .align(Alignment.BottomEnd)
-//                    .size(50.dp),
-//                containerColor = Color(0xFF9AA6B2),
-//
-//                ) {
-//                Icon(
-//                    imageVector = Icons.Default.Add,
-//                    contentDescription = "Agregar hábito",
-//                    tint = Color.White
-//                )
-//            }
+            FloatingActionButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(50.dp),
+                containerColor = Color(0xFF9AA6B2),
+
+                ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Agregar hábito",
+                    tint = Color.White
+                )
+            }
             // TODO CREAR UN MEJOR BOTON PARA AGREGAR EL HABITO
 
 

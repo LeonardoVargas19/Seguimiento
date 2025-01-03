@@ -67,6 +67,10 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.1")
     implementation("androidx.compose.material:material-icons-extended:")
 
+    implementation("androidx.compose.material:material:1.7.5")
+
+
+
     // HILT
     implementation("com.google.dagger:hilt-android:2.54")
     kapt("com.google.dagger:hilt-compiler:2.54")
