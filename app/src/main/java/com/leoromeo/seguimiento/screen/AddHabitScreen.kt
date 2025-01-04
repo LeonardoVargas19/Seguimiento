@@ -24,13 +24,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.leoromeo.seguimiento.domain.validateFields
 
 
 @Preview
@@ -58,15 +61,6 @@ private fun BodyScreen() {
     var motivo by remember { mutableStateOf("") }
     val isError = remember { mutableStateMapOf<String, Boolean>() }
 
-    fun validateFields(field: String, value: String): Boolean {
-        return when (field) {
-            "nombre" -> value.length >= 5
-            "dec" -> value.length >= 10
-            "motivo" -> value.length >= 10
-            else -> true
-
-        }
-    }
 
 
 
@@ -87,35 +81,14 @@ private fun BodyScreen() {
 
             ) {
             Column {
-                TextField(
-                    value = nombre,
-                    onValueChange = {
-                        nombre = it
-                        isError["nombre"] = !validateFields("nombre", it)
 
-                    },
-
-                    placeholder = {
-                        if (isError["nombre"] == true) {
-                            Text("Debe tener al menos 5 caracteres", color = Color.Red)
-                        } else {
-                            Text("Nombre del hábito")
-                        }
-
-
-                    },
-                    label = { Text("Nombre del hábito") },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.AccountCircle,
-                            contentDescription = "Agregar hábito"
-                        )
-                    },
-                    isError = isError["nombre"] == true,
-
-                    modifier = Modifier.fillMaxWidth(),
-
-                    )
+                nombre = formTextField(
+                    motivo = nombre,
+                    isError = isError,
+                    typeError = "nombre",
+                    label = "Nombre del hábito",
+                    imageVector = Icons.Default.AccountCircle
+                )
                 Spacer(modifier = Modifier.height(20.dp))
                 if (isError["nombre"] == true) {
                     Text(
@@ -125,32 +98,12 @@ private fun BodyScreen() {
                     )
                 }
 
-                TextField(
-                    value = desc,
-                    onValueChange = {
-                        desc = it
-                        isError["dec"] = !validateFields("dec", it)
-
-                    },
-                    placeholder = {
-                        if (isError["dec"] == true) {
-                            Text("Debe tener al menos 10 caracteres", color = Color.Red)
-                        } else {
-                            Text("Descripción breve")
-
-                        }
-                    },
-                    isError = isError["dec"] == true,
-                    label = { Text("Descripción breve") },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = "Agregar hábito"
-                        )
-                    },
-
-                    modifier = Modifier.fillMaxWidth()
-
+                desc = formTextField(
+                    motivo = desc,
+                    isError = isError,
+                    typeError = "dec",
+                    label = "Descripción breve",
+                    imageVector = Icons.Default.Add
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 if (isError["dec"] == true) {
@@ -176,31 +129,14 @@ private fun BodyScreen() {
 
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                TextField(
-                    value = motivo,
-                    onValueChange = {
-                        motivo = it
-                        isError["motivo"] = !validateFields("motivo", it)
-                    },
-                    label = { Text("Motivación principal.") },
-                    placeholder = {
-                        if (isError["motivo"] == true) {
-                            Text("Debe tener al menos 10 caracteres", color = Color.Red)
-                        } else {
-                            Text("Motivación principal.")
-                        }
-                    },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Favorite,
-                            contentDescription = "Agregar hábito"
-                        )
-                    },
-                    isError = isError["motivo"] == true,
-                    modifier = Modifier.fillMaxWidth(),
+                motivo = formTextField(
+                    motivo = motivo,
+                    isError = isError,
+                    typeError = "motivo",
+                    label = "Motivación principal.",
+                    imageVector = Icons.Default.Favorite
+                )
 
-
-                    )
                 if (isError["motivo"] == true) {
                     Text(
                         text = "Debe tener al menos 10 caracteres",
@@ -238,6 +174,44 @@ private fun BodyScreen() {
         }
 
     }
+}
+
+@Composable
+private fun formTextField(
+    motivo: String,
+    isError: SnapshotStateMap<String, Boolean>,
+    typeError: String,
+    label: String,
+    imageVector: ImageVector
+): String {
+    var motivo1 = motivo
+    TextField(
+        value = motivo1,
+        onValueChange = {
+            motivo1 = it
+            isError[typeError] = !validateFields(typeError, it)
+        },
+        label = { Text(label) },
+        placeholder = {
+            if (isError[typeError] == true) {
+                Text("Debe tener al menos 10 caracteres", color = Color.Red)
+            } else {
+                Text(label)
+            }
+        },
+        leadingIcon = {
+
+            Icon(
+                imageVector,
+                contentDescription = "Agregar hábito"
+            )
+        },
+        isError = isError["motivo"] == true,
+        modifier = Modifier.fillMaxWidth(),
+
+
+        )
+    return motivo1
 }
 
 @Composable
