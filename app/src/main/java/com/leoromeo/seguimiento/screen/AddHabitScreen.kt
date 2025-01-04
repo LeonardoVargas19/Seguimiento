@@ -2,6 +2,7 @@ package com.leoromeo.seguimiento.screen
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,12 +18,17 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
@@ -36,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import com.leoromeo.seguimiento.domain.validateFields
 
 
-@Preview
 @Composable
 fun AddHabitScreen() {
 
@@ -126,8 +131,11 @@ private fun BodyScreen() {
                         )
                     },
                     modifier = Modifier.fillMaxWidth()
-
+//                  TODO AGREGAR LA FECHA REFACTORIACION
                 )
+
+
+
                 Spacer(modifier = Modifier.height(20.dp))
                 motivo = formTextField(
                     motivo = motivo,
@@ -238,4 +246,55 @@ private fun TitleScren() {
                 )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun DatePickerScreen() {
+    val state = rememberDatePickerState()
+    var showDialog by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xffF8FAFC))
+            .padding(40.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+
+    ) {
+
+        Button(
+            onClick = {
+                showDialog = true
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text("Mostrar PickerDate")
+        }
+        if (showDialog) {
+            DatePickerDialog(
+                onDismissRequest = {
+                    showDialog = false
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showDialog = false
+                        }
+                    ) {
+                        Text("Confirm")
+                    }
+                },
+            ) {
+                DatePicker(state = state)
+
+            }
+        }
+
+
+    }
+
+
 }
