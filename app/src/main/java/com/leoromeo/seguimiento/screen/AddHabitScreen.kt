@@ -23,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -40,6 +41,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoromeo.seguimiento.domain.validateFields
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Preview
 @Composable
@@ -90,7 +94,7 @@ private fun BodyScreen() {
             ) {
             Column {
 
-                formTextField(
+                FormTextField(
                     value = nombre,
                     onValueChange = { nombre = it },
                     isError = isError,
@@ -107,7 +111,7 @@ private fun BodyScreen() {
                     )
                 }
 
-                formTextField(
+                FormTextField(
                     value = desc,
                     onValueChange = { desc = it },
                     isError = isError,
@@ -142,7 +146,7 @@ private fun BodyScreen() {
 
 
                 Spacer(modifier = Modifier.height(20.dp))
-                formTextField(
+                FormTextField(
                     value = motivo,
                     onValueChange = { motivo = it },
                     isError = isError,
@@ -166,34 +170,9 @@ private fun BodyScreen() {
                 ) {
                     Text("Mostrar PickerDate")
                 }
-                if (showDialog) {
-                    DatePickerDialog(
-                        onDismissRequest = {
-                            showDialog = false
-                        },
-                        confirmButton = {
-                            Button(
-                                onClick = {
-                                    // Obtén la fecha seleccionada y actualiza la variable
-                                    val selectedDate = state.selectedDateMillis
-                                    if (selectedDate != null) {
-                                        val formattedDate = java.text.SimpleDateFormat(
-                                            "dd/MM/yyyy",
-                                            java.util.Locale.getDefault()
-                                        )
-                                            .format(java.util.Date(selectedDate))
-                                        fecha = formattedDate
-                                    }
-                                    showDialog = false
-                                }
-                            ) {
-                                Text("Confirmar")
-                            }
-                        }
-                    ) {
-                        DatePicker(state = state)
-                    }
-                }
+                val pair = selectedDate(showDialog, state, fecha)
+                fecha = pair.first
+                showDialog = pair.second
 
 
             }
@@ -224,7 +203,47 @@ private fun BodyScreen() {
 }
 
 @Composable
-private fun formTextField(
+@OptIn(ExperimentalMaterial3Api::class)
+private fun selectedDate(
+    showDialog: Boolean,
+    state: DatePickerState,
+    fecha: String
+): Pair<String, Boolean> {
+    var showDialog1 = showDialog
+    var fecha1 = fecha
+    if (showDialog1) {
+        DatePickerDialog(
+            onDismissRequest = {
+                showDialog1 = false
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        // Obtén la fecha seleccionada y actualiza la variable
+                        val selectedDate = state.selectedDateMillis
+                        if (selectedDate != null) {
+                            val formattedDate = SimpleDateFormat(
+                                "dd/MM/yyyy",
+                                Locale.getDefault()
+                            )
+                                .format(Date(selectedDate))
+                            fecha1 = formattedDate
+                        }
+                        showDialog1 = false
+                    }
+                ) {
+                    Text("Confirmar")
+                }
+            }
+        ) {
+            DatePicker(state = state)
+        }
+    }
+    return Pair(fecha1, showDialog1)
+}
+
+@Composable
+private fun FormTextField(
     value: String,
     onValueChange: (String) -> Unit,
     isError: SnapshotStateMap<String, Boolean>,
