@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leoromeo.seguimiento.domain.validateFields
 
-
+@Preview
 @Composable
 fun AddHabitScreen() {
 
@@ -58,6 +58,7 @@ fun AddHabitScreen() {
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BodyScreen() {
     var nombre by remember { mutableStateOf("") }
@@ -65,6 +66,8 @@ private fun BodyScreen() {
     var fecha by remember { mutableStateOf("") }
     var motivo by remember { mutableStateOf("") }
     val isError = remember { mutableStateMapOf<String, Boolean>() }
+    val state = rememberDatePickerState()
+    var showDialog by remember { mutableStateOf(false) }
 
 
 
@@ -87,8 +90,9 @@ private fun BodyScreen() {
             ) {
             Column {
 
-                nombre = formTextField(
-                    motivo = nombre,
+                formTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
                     isError = isError,
                     typeError = "nombre",
                     label = "Nombre del hábito",
@@ -103,10 +107,11 @@ private fun BodyScreen() {
                     )
                 }
 
-                desc = formTextField(
-                    motivo = desc,
+                formTextField(
+                    value = desc,
+                    onValueChange = { desc = it },
                     isError = isError,
-                    typeError = "dec",
+                    typeError = "desc",
                     label = "Descripción breve",
                     imageVector = Icons.Default.Add
                 )
@@ -137,11 +142,12 @@ private fun BodyScreen() {
 
 
                 Spacer(modifier = Modifier.height(20.dp))
-                motivo = formTextField(
-                    motivo = motivo,
+                formTextField(
+                    value = motivo,
+                    onValueChange = { motivo = it },
                     isError = isError,
                     typeError = "motivo",
-                    label = "Motivación principal.",
+                    label = "Motivación principal",
                     imageVector = Icons.Default.Favorite
                 )
 
@@ -151,6 +157,33 @@ private fun BodyScreen() {
                         color = Color.Red,
                         modifier = Modifier.padding(start = 16.dp, top = 4.dp)
                     )
+                }
+                Button(
+                    onClick = {
+                        showDialog = true
+                    },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Mostrar PickerDate")
+                }
+                if (showDialog) {
+                    DatePickerDialog(
+                        onDismissRequest = {
+                            showDialog = false
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    showDialog = false
+                                }
+                            ) {
+                                Text("Confirm")
+                            }
+                        },
+                    ) {
+                        DatePicker(state = state)
+
+                    }
                 }
 
 
@@ -186,18 +219,18 @@ private fun BodyScreen() {
 
 @Composable
 private fun formTextField(
-    motivo: String,
+    value: String,
+    onValueChange: (String) -> Unit,
     isError: SnapshotStateMap<String, Boolean>,
     typeError: String,
     label: String,
     imageVector: ImageVector
-): String {
-    var motivo1 = motivo
+) {
     TextField(
-        value = motivo1,
+        value = value,
         onValueChange = {
-            motivo1 = it
-            isError[typeError] = !validateFields(typeError, it)
+            onValueChange(it) // Actualiza el estado en el componente padre
+            isError[typeError] = !validateFields(typeError, it) // Valida el campo
         },
         label = { Text(label) },
         placeholder = {
@@ -208,19 +241,13 @@ private fun formTextField(
             }
         },
         leadingIcon = {
-
-            Icon(
-                imageVector,
-                contentDescription = "Agregar hábito"
-            )
+            Icon(imageVector, contentDescription = "Agregar hábito")
         },
-        isError = isError["motivo"] == true,
-        modifier = Modifier.fillMaxWidth(),
-
-
-        )
-    return motivo1
+        isError = isError[typeError] == true,
+        modifier = Modifier.fillMaxWidth()
+    )
 }
+
 
 @Composable
 private fun TitleScren() {
@@ -248,53 +275,4 @@ private fun TitleScren() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
-@Composable
-private fun DatePickerScreen() {
-    val state = rememberDatePickerState()
-    var showDialog by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xffF8FAFC))
-            .padding(40.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-
-    ) {
-
-        Button(
-            onClick = {
-                showDialog = true
-            },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text("Mostrar PickerDate")
-        }
-        if (showDialog) {
-            DatePickerDialog(
-                onDismissRequest = {
-                    showDialog = false
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            showDialog = false
-                        }
-                    ) {
-                        Text("Confirm")
-                    }
-                },
-            ) {
-                DatePicker(state = state)
-
-            }
-        }
-
-
-    }
-
-
-}
