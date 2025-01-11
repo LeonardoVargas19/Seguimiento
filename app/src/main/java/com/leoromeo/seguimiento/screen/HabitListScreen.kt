@@ -1,6 +1,5 @@
 package com.leoromeo.seguimiento.screen
 
-import android.graphics.fonts.FontStyle
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateFloatAsState

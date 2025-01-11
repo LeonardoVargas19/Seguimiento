@@ -174,15 +174,24 @@ private fun BodyScreen() {
                         confirmButton = {
                             Button(
                                 onClick = {
+                                    // Obtén la fecha seleccionada y actualiza la variable
+                                    val selectedDate = state.selectedDateMillis
+                                    if (selectedDate != null) {
+                                        val formattedDate = java.text.SimpleDateFormat(
+                                            "dd/MM/yyyy",
+                                            java.util.Locale.getDefault()
+                                        )
+                                            .format(java.util.Date(selectedDate))
+                                        fecha = formattedDate
+                                    }
                                     showDialog = false
                                 }
                             ) {
-                                Text("Confirm")
+                                Text("Confirmar")
                             }
-                        },
+                        }
                     ) {
                         DatePicker(state = state)
-
                     }
                 }
 
@@ -193,25 +202,22 @@ private fun BodyScreen() {
                     isError["motivo"] = !validateFields("motivo", motivo)
                     isError["nombre"] = !validateFields("nombre", nombre)
                     isError["desc"] = !validateFields("desc", desc)
-                    Log.d("TAG", "BodyScreen: $nombre $desc $fecha $motivo")
-
-
+                    Log.d(
+                        "TAG",
+                        "BodyScreen: Nombre: $nombre, Descripción: $desc, Fecha: $fecha, Motivación: $motivo"
+                    )
                 },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .size(50.dp),
-                containerColor = Color(0xFF9AA6B2),
-
-                ) {
+                containerColor = Color(0xFF9AA6B2)
+            ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Agregar hábito",
                     tint = Color.White
                 )
             }
-            // TODO CREAR UN MEJOR BOTON PARA AGREGAR EL HABITO
-
-
         }
 
     }
